@@ -1,0 +1,41 @@
+#! /bin/sh
+#
+bspc monitor eDP1 -d 1 2 3 4 
+bspc monitor HDMI2 -d 5 6 7 8
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc config border_width         2
+bspc config window_gap           25
+bspc config top_padding          30 
+bspc config bottom_padding       0
+bspc config split_ratio          0.5
+bspc config single_monocle       false
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+bspc config remove_disabled_monitors true
+bspc config remove_unplugged_monitors true
+bspc config merge_overlapping_monitors true
+
+setxkbmap -option grp:alt_shift_toggle us,ru &
+
+# Autostart
+picom &
+xbanish &
+fcitx5 &
+pavuc &
+
+xrandr --output eDP1 --primary --mode 1920x1080 --rotate normal --output HDMI2 --mode 1680x1050 --rotate normal --right-of eDP1
+
+$HOME/polybar-collection/launch.sh &
+
+# Apply Xdefaults to st
+xrdb $HOME/.config/st/Xdefaults
+
+# Tap to click
+xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Tapping Enabled" 1
+
+# Change wallpaper every 10 minutes
+$HOME/.local/share/scripts/random_wallpaper.sh $HOME/Pictures/Wallpapers/3 600
+
